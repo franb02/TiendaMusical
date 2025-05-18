@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Catálogo de Instrumentos{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>Catálogo de Instrumentos</h1>
+            {% if categoria_actual %}
+            <h2 class="h4 text-muted">Categoría: {{ categoria_actual.nombre }}</h2>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            <form method="get" class="d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Buscar..." value="{{ query }}">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Filtros laterales -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Filtros</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Categorías</h6>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item{% if not categoria_actual %} active{% endif %}">
+                            <a href="{% url 'producto_lista' %}{% if query %}?q={{ query }}{% endif %}" class="{% if not categoria_actual %}text-white{% endif %} d-block text-decoration-none">Todas</a>
+                        </li>
+                        {% for categoria in categorias %}
+                        <li class="list-group-item{% if categoria_actual.id == categoria.id %} active{% endif %}">
+                            <a href="{% url 'categoria_detalle' categoria.slug %}{% if query %}?q={{ query }}{% endif %}" class="{% if categoria_actual.id == categoria.id %}text-white{% endif %} d-block text-decoration-none">{{ categoria.nombre }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <h6>Ordenar por</h6>
+                    <div class="list-group">
+                        <a href="?{% if query %}q={{ query }}&{% endif %}orden=fecha" class="list-group-item list-group-item-action {% if orden == '' or orden == 'fecha' %}active{% endif %}">Más recientes</a>
+                        <a href="?{% if query %}q={{ query }}&{% endif %}orden=nombre" class="list-group-item list-group-item-action {% if orden == 'nombre' %}active{% endif %}">Nombre</a>
+                        <a href="?{% if query %}q={{ query }}&{% endif %}orden=precio_asc" class="list-group-item list-group-item-action {% if orden == 'precio_asc' %}active{% endif %}">Precio: menor a mayor</a>
+                        <a href="?{% if query %}q={{ query }}&{% endif %}orden=precio_desc" class="list-group-item list-group-item-action {% if orden == 'precio_desc' %}active{% endif %}">Precio: mayor a menor</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listado de productos -->
+        <div class="col-md-9">
+            {% if query %}
+            <div class="alert alert-info mb-4">
+                Resultados para: <strong>{{ query }}</strong>
+                <a href="{% url 'producto_lista' %}" class="float-end">Limpiar búsqueda</a>
+            </div>
+            {% endif %}
+
+            <div class="row">
+                {% for instrumento in instrumentos %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if instrumento.imagen %}
+                        <img src="{{ instrumento.imagen.url }}" class="card-img-top" alt="{{ instrumento.nombre }}">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ instrumento.nombre }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ instrumento.nombre }}</h5>
+                            <p class="card-text text-muted">{{ instrumento.categoria.nombre }}</p>
+                            <p class="card-text fw-bold text-primary">€{{ instrumento.precio }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
+                            <a href="{% url 'instrumento_detalle' instrumento.slug %}" class="btn btn-sm btn-primary">Ver Detalles</a>
+                            <button class="btn btn-sm btn-success agregar-carrito" data-id="{{ instrumento.id }}">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        No se encontraron instrumentos{% if query %} para "{{ query }}"{% endif %}.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Paginación -->
+            {% if is_paginated %}
+            <nav aria-label="Paginación" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // funcionalidad para agregar al carrito NO DESARROLLADA 
+        const botonesAgregar = document.querySelectorAll('.agregar-carrito');
+        botonesAgregar.forEach(boton => {
+            boton.addEventListener('click', function() {
+                const instrumentoId = this.dataset.id;
+                // implementar carrito
+                alert('Funcionalidad de carrito en desarrollo');
+            });
+        });
+    });
+</script>
+{% endblock %}

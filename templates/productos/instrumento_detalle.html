@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ instrumento.nombre }} - Tienda Musical{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'producto_lista' %}">Productos</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'categoria_detalle' instrumento.categoria.slug %}">{{ instrumento.categoria.nombre }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ instrumento.nombre }}</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-5">
+        <!-- Imagen del producto -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                {% if instrumento.imagen %}
+                <img src="{{ instrumento.imagen.url }}" class="img-fluid rounded" alt="{{ instrumento.nombre }}">
+                {% else %}
+                <img src="https://via.placeholder.com/600x400" class="img-fluid rounded" alt="{{ instrumento.nombre }}">
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Información del producto -->
+        <div class="col-md-6">
+            <h1 class="mb-3">{{ instrumento.nombre }}</h1>
+            <p class="text-muted">Categoría: {{ instrumento.categoria.nombre }}</p>
+            
+            <div class="mb-4">
+                <h2 class="h1 text-primary fw-bold">€{{ instrumento.precio }}</h2>
+                <p class="badge {% if instrumento.stock > 0 %}bg-success{% else %}bg-danger{% endif %}">
+                    {% if instrumento.stock > 0 %}En stock ({{ instrumento.stock }} disponibles){% else %}Agotado{% endif %}
+                </p>
+            </div>
+            
+            <div class="mb-4">
+                <h3 class="h5">Descripción</h3>
+                <p>{{ instrumento.descripcion|linebreaks }}</p>
+            </div>
+            
+            {% if instrumento.especificaciones %}
+            <div class="mb-4">
+                <h3 class="h5">Especificaciones</h3>
+                <ul class="list-group">
+                    {% for key, value in instrumento.especificaciones.items %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ key }}</span>
+                        <span class="text-muted">{{ value }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+            <div class="d-grid gap-2">
+                {% if instrumento.stock > 0 %}
+                <form method="post" action="" class="d-flex mb-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="instrumento_id" value="{{ instrumento.id }}">
+                    <div class="input-group">
+                        <span class="input-group-text">Cantidad</span>
+                        <input type="number" name="cantidad" value="1" min="1" max="{{ instrumento.stock }}" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success ms-2 flex-grow-1">
+                        <i class="fas fa-cart-plus me-2"></i> Añadir al Carrito
+                    </button>
+                </form>
+                {% else %}
+                <button class="btn btn-secondary" disabled>
+                    <i class="fas fa-times-circle me-2"></i> Producto Agotado
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

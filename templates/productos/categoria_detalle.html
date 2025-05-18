@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ categoria.nombre }} - Tienda Musical{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'producto_lista' %}">Productos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ categoria.nombre }}</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>{{ categoria.nombre }}</h1>
+            {% if categoria.descripcion %}
+            <p class="lead">{{ categoria.descripcion }}</p>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            <form method="get" class="d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Buscar en {{ categoria.nombre }}..." value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Filtros laterales -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Categorías</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="{% url 'producto_lista' %}" class="d-block text-decoration-none">Todas las categorías</a>
+                        </li>
+                        {% for cat in categorias %}
+                        <li class="list-group-item{% if cat.id == categoria.id %} active{% endif %}">
+                            <a href="{% url 'categoria_detalle' cat.slug %}" class="{% if cat.id == categoria.id %}text-white{% endif %} d-block text-decoration-none">{{ cat.nombre }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Ordenar por</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}orden=fecha" class="list-group-item list-group-item-action {% if request.GET.orden == '' or request.GET.orden == 'fecha' %}active{% endif %}">Más recientes</a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}orden=nombre" class="list-group-item list-group-item-action {% if request.GET.orden == 'nombre' %}active{% endif %}">Nombre</a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}orden=precio_asc" class="list-group-item list-group-item-action {% if request.GET.orden == 'precio_asc' %}active{% endif %}">Precio: menor a mayor</a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}orden=precio_desc" class="list-group-item list-group-item-action {% if request.GET.orden == 'precio_desc' %}active{% endif %}">Precio: mayor a menor</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listado de productos -->
+        <div class="col-md-9">
+            {% if request.GET.q %}
+            <div class="alert alert-info mb-4">
+                Resultados para: <strong>{{ request.GET.q }}</strong> en {{ categoria.nombre }}
+                <a href="{% url 'categoria_detalle' categoria.slug %}" class="float-end">Limpiar búsqueda</a>
+            </div>
+            {% endif %}
+
+            <div class="row">
+                {% for instrumento in instrumentos %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if instrumento.imagen %}
+                        <img src="{{ instrumento.imagen.url }}" class="card-img-top" alt="{{ instrumento.nombre }}">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ instrumento.nombre }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ instrumento.nombre }}</h5>
+                            <p class="card-text fw-bold text-primary">€{{ instrumento.precio }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
+                            <a href="{% url 'instrumento_detalle' instrumento.slug %}" class="btn btn-sm btn-primary">Ver Detalles</a>
+                            <button class="btn btn-sm btn-success agregar-carrito" data-id="{{ instrumento.id }}">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        No se encontraron instrumentos en esta categoría{% if request.GET.q %} para "{{ request.GET.q }}"{% endif %}.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aquí se implementará la funcionalidad para agregar al carrito
+        const botonesAgregar = document.querySelectorAll('.agregar-carrito');
+        botonesAgregar.forEach(boton => {
+            boton.addEventListener('click', function() {
+                const instrumentoId = this.dataset.id;
+                // Aquí se implementará la lógica para agregar al carrito mediante AJAX
+                alert('Funcionalidad de carrito en desarrollo');
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

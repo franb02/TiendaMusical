@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio - Tienda de Instrumentos Musicales{% endblock %}
+
+{% block content %}
+<!-- bienvenida -->
+<section class="bg-dark text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold">Descubre el mundo de la música</h1>
+                <p class="lead">Encuentra los mejores instrumentos musicales para tu pasión</p>
+                <a href="{% url 'producto_lista' %}" class="btn btn-primary btn-lg mt-3">
+                    Ver Catálogo <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+            <div class="col-md-6 d-none d-md-block">
+                <img src="{% static 'instrumentos-musicales.webp' %}" alt="Instrumentos Musicales" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Productos Destacados -->
+<section class="mb-5 bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Productos Destacados</h2>
+        <div class="row">
+            {% for instrumento in destacados %}
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    {% if instrumento.imagen %}
+                    <img src="{{ instrumento.imagen.url }}" class="card-img-top" alt="{{ instrumento.nombre }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ instrumento.nombre }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ instrumento.nombre }}</h5>
+                        <p class="card-text text-muted">{{ instrumento.categoria.nombre }}</p>
+                        <p class="card-text fw-bold text-primary">€{{ instrumento.precio }}</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <a href="{% url 'instrumento_detalle' instrumento.slug %}" class="btn btn-sm btn-primary w-100">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No hay productos destacados disponibles.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- Categorias Destacadas -->
+<section class="mb-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Categorías</h2>
+        <div class="row">
+            {% for categoria in categorias %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">{{ categoria.nombre }}</h3>
+                        <p class="card-text">{{ categoria.descripcion|truncatewords:15 }}</p>
+                        <a href="{% url 'categoria_detalle' categoria.slug %}" class="btn btn-outline-primary">Ver Categoría</a>
+                    </div>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No hay categorías disponibles.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Ultimos Productos -->
+<section class="mb-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Últimos Productos</h2>
+        <div class="row">
+            {% for instrumento in instrumentos %}
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    {% if instrumento.imagen %}
+                    <img src="{{ instrumento.imagen.url }}" class="card-img-top" alt="{{ instrumento.nombre }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ instrumento.nombre }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ instrumento.nombre }}</h5>
+                        <p class="card-text text-muted">{{ instrumento.categoria.nombre }}</p>
+                        <p class="card-text fw-bold text-primary">€{{ instrumento.precio }}</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <a href="{% url 'instrumento_detalle' instrumento.slug %}" class="btn btn-sm btn-primary w-100">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}</div><div class="row">{% endif %}
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No hay productos disponibles.</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'producto_lista' %}" class="btn btn-outline-primary">Ver todos los productos</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
