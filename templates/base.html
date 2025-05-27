@@ -17,49 +17,60 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top mi-barra-centrada">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">Tienda Musical</a>
+            <a class="navbar-brand d-flex align-items-center mt-1" href="{% url 'home' %}">
+                <img src="{% static 'logoo.svg' %}" alt="Sonora Logo" height="50" class="logo mx-3">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'producto_lista' %}">Productos</a>
-                    </li>
+                        <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home me-2"></i>Inicio</a>
+                    </li>                    
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Categorías
+                        <a class="nav-link dropdown-toggle" href="{% url 'producto_lista' %}" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-guitar me-2"></i>Productos
                         </a>
                         <ul class="dropdown-menu">
                             {% for categoria in categorias %}
                             <li><a class="dropdown-item" href="{% url 'categoria_detalle' categoria.slug %}">{{ categoria.nombre }}</a></li>
                             {% endfor %}
+                            <li><a class="dropdown-item" href="{% url 'producto_lista'%}">Todos</a></li>
+
                         </ul>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
+                    <!-- Carrito de compras -->
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="">
+                            <i class="fas fa-shopping-cart me-2"></i>Carrito
+                            <span id="carrito-contador" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ carrito.get_total_items|default:0 }}
+                            </span>
+                        </a>
+                    </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            {{ user.username }}
+                           <i class="fa-solid fa-user me-2"></i>{{ user.username }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{% url 'perfil' %}">Mi Perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="fas fa-user me-2"></i>Mi Perfil</a></li>
+                            <li><a class="dropdown-item" href="" i class="fas fa-box me-2"></i>Mis Pedidos</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
+                        <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'registro' %}">Registrarse</a>
+                        <a class="nav-link" href="{% url 'registro' %}"><i class="fas fa-user-plus me-2"></i>Registrarse</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -67,12 +78,12 @@
         </div>
     </nav>
 
-    <!-- Contenido -->
+      <!-- Contenido -->
     <main class="container py-4">
         {% if messages %}
         <div class="messages">
             {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -88,7 +99,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <h5>Tienda Musical</h5>
+                    <h5>Sonora</h5>
                     <p>Tu tienda de instrumentos musicales de confianza</p>
                 </div>
                 <div class="col-md-4">
@@ -111,7 +122,7 @@
             </div>
             <hr>
             <div class="text-center">
-                <p>&copy; {% now "Y" %} Tienda Musical. Todos los derechos reservados.</p>
+                <p>&copy; {% now "Y" %}  Sonora. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>

@@ -3,6 +3,10 @@
 
 {% block title %}Inicio - Tienda de Instrumentos Musicales{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
 {% block content %}
 <!-- bienvenida -->
 <section class="bg-dark text-white py-5 mb-5">
@@ -64,7 +68,7 @@
                     <div class="card-body text-center">
                         <h3 class="card-title">{{ categoria.nombre }}</h3>
                         <p class="card-text">{{ categoria.descripcion|truncatewords:15 }}</p>
-                        <a href="{% url 'categoria_detalle' categoria.slug %}" class="btn btn-outline-primary">Ver Categoría</a>
+                        <a href="{% url 'categoria_detalle' categoria.slug %}" class="btn btn-outline-primary-custom">Ver Categoría</a>
                     </div>
                 </div>
             </div>
@@ -109,7 +113,7 @@
             {% endfor %}
         </div>
         <div class="text-center mt-4">
-            <a href="{% url 'producto_lista' %}" class="btn btn-outline-primary">Ver todos los productos</a>
+            <a href="{% url 'producto_lista' %}" class="btn btn-outline-primary-custom">Ver todos los productos</a>
         </div>
     </div>
 </section>
