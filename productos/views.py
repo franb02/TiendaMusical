@@ -13,14 +13,14 @@ class HomeView(ListView):
     def get_queryset(self):
         return Instrumento.objects.filter(disponible=True).order_by('-fecha_creacion')[:8]
         
-    # Devuelve 4 instrumentos destacados aleatorios.
+    # Devuelve 8 instrumentos destacados aleatorios.
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['destacados'] = Instrumento.objects.filter(disponible=True).order_by('?')[:8]
         context['categorias'] = Categoria.objects.all()
-        context['destacados'] = Instrumento.objects.filter(disponible=True).order_by('?')[:4]
         return context
 
-# Vista para la lista de instrumentos y filtros
+# Vista unificada para la lista de instrumentos y categorías
 class InstrumentoListView(ListView):
     model = Instrumento
     template_name = 'productos/instrumento_lista.html'
@@ -30,12 +30,12 @@ class InstrumentoListView(ListView):
     def get_queryset(self):
         queryset = Instrumento.objects.filter(disponible=True)
         
-        # Filtro por categoria
-        categoria_slug = self.kwargs.get('categoria_slug')
+        # Filtro por categoria (puede venir de URL o parámetro)
+        categoria_slug = self.kwargs.get('slug') or self.kwargs.get('categoria_slug')
         if categoria_slug:
             queryset = queryset.filter(categoria__slug=categoria_slug)
         
-        # Busqueda
+        # Búsqueda
         query = self.request.GET.get('q')
         if query:
             queryset = queryset.filter(
@@ -59,32 +59,23 @@ class InstrumentoListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        # Añadir todas las categorías para los filtros
         context['categorias'] = Categoria.objects.all()
         
         # Añadir información de filtros activos
-        categoria_slug = self.kwargs.get('categoria_slug')
+        categoria_slug = self.kwargs.get('slug') or self.kwargs.get('categoria_slug')
         if categoria_slug:
-            context['categoria_actual'] = get_object_or_404(Categoria, slug=categoria_slug)
+            categoria = get_object_or_404(Categoria, slug=categoria_slug)
+            context['categoria_actual'] = categoria
+            # Actualizar el título dinámicamente
+            context['page_title'] = f"{categoria.nombre} - Tienda Musical"
+        else:
+            context['page_title'] = "Catálogo de Instrumentos"
             
         context['query'] = self.request.GET.get('q', '')
         context['orden'] = self.request.GET.get('orden', '')
         
-        return context
-
-# Vista para la lista de categorías
-class CategoriaDetailView(DetailView):
-    model = Categoria
-    template_name = 'productos/categoria_detalle.html'
-    context_object_name = 'categoria'
-    slug_url_kwarg = 'slug'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['instrumentos'] = Instrumento.objects.filter(
-            categoria=self.object,
-            disponible=True
-        )
-        context['categorias'] = Categoria.objects.all()
         return context
 
 # Vista para instrumento
@@ -96,7 +87,6 @@ class InstrumentoDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categorias'] = Categoria.objects.all()
         context['relacionados'] = Instrumento.objects.filter(
             categoria=self.object.categoria,
             disponible=True

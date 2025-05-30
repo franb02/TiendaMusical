@@ -1,0 +1,326 @@
+/* Estilos específicos para páginas de productos */
+
+/* Estilos para scroll horizontal de productos */
+.productos-scroll-container {
+    position: relative;
+    overflow: hidden;
+    min-height: 350px;
+    padding: 20px 0;
+}
+
+.productos-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.productos-scroll::-webkit-scrollbar {
+    display: none; /* WebKit */
+}
+
+.producto-card-scroll {
+    flex: 0 0 280px; /* Ancho fijo para cada card */
+    min-width: 280px;
+}
+
+/* Botones de navegación para el scroll */
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(44, 62, 80, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.scroll-btn:hover {
+    background: rgba(44, 62, 80, 1);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
+
+.scroll-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.scroll-btn-left {
+    left: 15px;
+}
+
+.scroll-btn-right {
+    right: 15px;
+}
+
+.scroll-btn i {
+    font-size: 18px;
+    pointer-events: none; /* Evita problemas con el click en el icono */
+}
+
+/* Indicador visual cuando el botón está deshabilitado */
+.scroll-btn[style*="pointer-events: none"] {
+    cursor: not-allowed;
+    background: rgba(44, 62, 80, 0.3) !important;
+}
+
+/* Etiquetas de productos */
+.badge-container {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 2;
+}
+
+.badge-offer {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
+}
+
+.badge-new {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    box-shadow: 0 2px 5px rgba(241, 196, 15, 0.3);
+}
+
+/* Precios de productos */
+.precio-container {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+}
+
+.precio {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--secondary-color);
+    margin-right: 10px;
+}
+
+.precio-anterior {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.descuento {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    font-weight: 700;
+    margin-left: 10px;
+}
+
+/* Reproductor de audio para productos */
+.audio-player {
+    width: 100%;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    margin: 15px 0;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.audio-player .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+
+.audio-player .play-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.audio-player .play-btn:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.1);
+}
+
+.audio-player .progress-container {
+    flex-grow: 1;
+    margin: 0 15px;
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+}
+
+.audio-player .progress-bar {
+    height: 100%;
+    background: linear-gradient(to right, var(--secondary-color), var(--hover-color));
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+.audio-player .time {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Indicadores de stock */
+.stock-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.in-stock {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #27ae60;
+}
+
+.low-stock {
+    background-color: rgba(241, 196, 15, 0.2);
+    color: #f39c12;
+}
+
+.out-stock {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #c0392b;
+}
+
+/* Detalles de producto */
+.product-details {
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.product-gallery {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.product-main-img {
+    border-radius: 8px;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.product-thumbs {
+    display: flex;
+    margin-top: 15px;
+    gap: 10px;
+}
+
+.product-thumb {
+    width: 80px;
+    height: 80px;
+    border-radius: 6px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+    border: 2px solid transparent;
+}
+
+.product-thumb:hover,
+.product-thumb.active {
+    opacity: 1;
+    border-color: var(--primary-color);
+}
+
+.product-specs {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.spec-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.spec-item:last-child {
+    border-bottom: none;
+}
+
+.spec-title {
+    font-weight: 600;
+    color: #666;
+}
+
+.spec-value {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+/* Responsividad para productos */
+@media (max-width: 768px) {
+    .producto-card-scroll {
+        flex: 0 0 250px;
+        min-width: 250px;
+    }
+    
+    .scroll-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .scroll-btn i {
+        font-size: 14px;
+    }
+    
+    .audio-player .controls {
+        flex-direction: column;
+    }
+    
+    .audio-player .progress-container {
+        margin: 15px 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .producto-card-scroll {
+        flex: 0 0 220px;
+        min-width: 220px;
+    }
+}

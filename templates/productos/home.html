@@ -5,70 +5,97 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/productos.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/productos-scroll.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <!-- bienvenida -->
-<section class="bg-dark text-white py-5 mb-5">
+<section class="hero-banner position-relative overflow-hidden" style="border-radius: 40px;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h1 class="display-4 fw-bold">Descubre el mundo de la música</h1>
-                <p class="lead">Encuentra los mejores instrumentos musicales para tu pasión</p>
-                <a href="{% url 'producto_lista' %}" class="btn btn-primary btn-lg mt-3">
-                    Ver Catálogo <i class="fas fa-arrow-right ms-2"></i>
-                </a>
+                <div class="hero-content">
+                    <h1 class="display-4 fw-bold mb-4 animated-title">Descubre el mundo de la música</h1>
+                    <p class="lead animated-text">Encuentra los mejores instrumentos musicales para tu pasión</p>
+                    <div class="d-flex gap-3 mt-4 animated-buttons">
+                        <a href="{% url 'producto_lista' %}" class="btn btn-primary btn-lg">
+                            Ver Catálogo <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                        <a href="#destacados" class="btn btn-outline-light btn-lg">
+                            Destacados <i class="fas fa-star ms-2"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6 d-none d-md-block">
-                <img src="{% static 'instrumentos-musicales.webp' %}" alt="Instrumentos Musicales" class="img-fluid rounded">
+            <div class="col-md-6 position-relative d-none d-md-block">
+                <div class="hero-image-container">
+                    <img src="{% static 'instrumentos-musicales.webp' %}" alt="Instrumentos Musicales" class="img-fluid rounded floating-image" style="border-radius: 40px;">
+                    <div class="music-note note-1"><i class="fas fa-music"></i></div>
+                    <div class="music-note note-2"><i class="fas fa-music"></i></div>
+                    <div class="music-note note-3"><i class="fas fa-music"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="wave-shape"></div>
+</section>
+
+<!-- Productos Destacados -->
+<section class="mb-5 py-5" id="destacados">
+    <div class="container">
+        <h2 class="mb-5 display-5 fw-bold">Productos Destacados</h2>
+        <div id="productos-destacados" class="productos-scroll-container">
+            <button class="scroll-btn scroll-btn-left">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="scroll-btn scroll-btn-right">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="productos-scroll">
+                {% for instrumento in destacados %}
+                <div class="producto-card-scroll">
+                    <div class="card h-100 shadow-sm">
+                        {% if instrumento.imagen %}
+                        <img src="{{ instrumento.imagen.url }}" class="card-img-top" alt="{{ instrumento.nombre }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ instrumento.nombre }}" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ instrumento.nombre }}</h5>
+                            <p class="card-text text-muted">{{ instrumento.categoria.nombre }}</p>
+                            <p class="card-text fw-bold text-primary mt-auto">€{{ instrumento.precio }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                            <a href="{% url 'instrumento_detalle' instrumento.slug %}" class="btn btn-sm btn-primary w-100">Ver Detalles</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p>No hay productos destacados disponibles.</p>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 </section>
 
-<!-- Productos Destacados -->
-<section class="mb-5 bg-light py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Productos Destacados</h2>
-        <div class="row">
-            {% for instrumento in destacados %}
-            <div class="col-md-3 mb-4">
-                <div class="card h-100">
-                    {% if instrumento.imagen %}
-                    <img src="{{ instrumento.imagen.url }}" class="card-img-top" alt="{{ instrumento.nombre }}">
-                    {% else %}
-                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ instrumento.nombre }}">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ instrumento.nombre }}</h5>
-                        <p class="card-text text-muted">{{ instrumento.categoria.nombre }}</p>
-                        <p class="card-text fw-bold text-primary">€{{ instrumento.precio }}</p>
-                    </div>
-                    <div class="card-footer bg-white border-top-0">
-                        <a href="{% url 'instrumento_detalle' instrumento.slug %}" class="btn btn-sm btn-primary w-100">Ver Detalles</a>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12 text-center">
-                <p>No hay productos destacados disponibles.</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
 <!-- Categorias Destacadas -->
 <section class="mb-5">
     <div class="container">
-        <h2 class="text-center mb-4">Categorías</h2>
+        <h2 class="mb-5 display-5 fw-bold">Categorías</h2>
         <div class="row">
             {% for categoria in categorias %}
             <div class="col-md-4 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 shadow-sm">
                     <div class="card-body text-center">
                         <h3 class="card-title">{{ categoria.nombre }}</h3>
                         <p class="card-text">{{ categoria.descripcion|truncatewords:15 }}</p>
-                        <a href="{% url 'categoria_detalle' categoria.slug %}" class="btn btn-outline-primary-custom">Ver Categoría</a>
+                        <a href="{% url 'categoria_detalle' categoria.slug %}" class="btn btn-primary-custom">Ver Categoría</a>
                     </div>
                 </div>
             </div>
@@ -85,35 +112,155 @@
 <!-- Ultimos Productos -->
 <section class="mb-5">
     <div class="container">
-        <h2 class="text-center mb-4">Últimos Productos</h2>
-        <div class="row">
-            {% for instrumento in instrumentos %}
-            <div class="col-md-3 mb-4">
-                <div class="card h-100">
-                    {% if instrumento.imagen %}
-                    <img src="{{ instrumento.imagen.url }}" class="card-img-top" alt="{{ instrumento.nombre }}">
-                    {% else %}
-                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ instrumento.nombre }}">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ instrumento.nombre }}</h5>
-                        <p class="card-text text-muted">{{ instrumento.categoria.nombre }}</p>
-                        <p class="card-text fw-bold text-primary">€{{ instrumento.precio }}</p>
+        <h2 class="mb-5 display-5 fw-bold">Últimos Productos</h2>
+        
+        {% if instrumentos %}
+        <div id="productos-recientes" class="productos-scroll-container">
+            <button class="scroll-btn scroll-btn-left">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="scroll-btn scroll-btn-right">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="productos-scroll">
+                {% for instrumento in instrumentos|slice:":8" %}
+                <div class="producto-card-scroll">
+                    <div class="card h-100 shadow-sm">
+                        {% if instrumento.imagen %}
+                        <img src="{{ instrumento.imagen.url }}" class="card-img-top" alt="{{ instrumento.nombre }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ instrumento.nombre }}" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ instrumento.nombre }}</h5>
+                            <p class="card-text text-muted">{{ instrumento.categoria.nombre }}</p>
+                            <p class="card-text fw-bold text-primary mt-auto">€{{ instrumento.precio }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                            <a href="{% url 'instrumento_detalle' instrumento.slug %}" class="btn btn-sm btn-primary w-100">Ver Detalles</a>
+                        </div>
                     </div>
-                    <div class="card-footer bg-white border-top-0">
-                        <a href="{% url 'instrumento_detalle' instrumento.slug %}" class="btn btn-sm btn-primary w-100">Ver Detalles</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center">
+            <p>No hay productos disponibles.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Por qué elegirnos -->
+<section class="py-5 mb-5">
+    <div class="container">
+        <h2 class="mb-5 display-5 fw-bold">¿Por qué elegirnos?</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-shield-alt fa-3x text-primary"></i>
+                    </div>
+                    <h4>Garantía Extendida</h4>
+                    <p class="text-muted">Todos nuestros instrumentos incluyen garantía extendida de 2 años</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-headset fa-3x text-primary"></i>
+                    </div>
+                    <h4>Soporte 24/7</h4>
+                    <p class="text-muted">Nuestro equipo está disponible para ayudarte cuando lo necesites</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-tools fa-3x text-primary"></i>
+                    </div>
+                    <h4>Servicio Técnico</h4>
+                    <p class="text-muted">Reparación y mantenimiento por expertos certificados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonios -->
+<section class="mb-5">
+    <div class="container">
+        <h2 class="mb-5 display-5 fw-bold">Lo que dicen nuestros clientes</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-quote-left fa-2x text-primary mb-3"></i>
+                        <p class="card-text">"Excelente servicio y productos de gran calidad. Mi guitarra llegó perfectamente empaquetada."</p>
+                        <h5 class="card-title">María González</h5>
+                        <div class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-            {% if forloop.counter|divisibleby:4 and not forloop.last %}</div><div class="row">{% endif %}
-            {% empty %}
-            <div class="col-12 text-center">
-                <p>No hay productos disponibles.</p>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-quote-left fa-2x text-primary mb-3"></i>
+                        <p class="card-text">"Compré un piano digital y estoy encantado. El envío fue súper rápido y el precio inmejorables."</p>
+                        <h5 class="card-title">Carlos Martín</h5>
+                        <div class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-quote-left fa-2x text-primary mb-3"></i>
+                        <p class="card-text">"La batería que compré superó mis expectativas. Definitivamente volveré a comprar aquí."</p>
+                        <h5 class="card-title">Ana López</h5>
+                        <div class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="text-center mt-4">
-            <a href="{% url 'producto_lista' %}" class="btn btn-outline-primary-custom">Ver todos los productos</a>
+    </div>
+</section>
+
+<!-- Final -->
+<section class="py-5" style="background-color: #2c3e50; border-radius: 20px;">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <h2 class="text-white mb-4">¿Listo para hacer música?</h2>
+                <p class="lead text-white-50 mb-4">Únete a miles de músicos que confían en nosotros para sus instrumentos musicales</p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="{% url 'producto_lista' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-bag me-2"></i>Explorar Catálogo
+                    </a>
+                    <a href="#" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-phone me-2"></i>Contactar
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
