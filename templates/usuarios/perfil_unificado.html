@@ -1,0 +1,454 @@
+<!-- plantilla unificada de perfil: modo vista/edición -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+<!-- título segun modo -->
+{% block title %}
+    {% if modo_edicion %}
+        Editar Perfil - Tienda Musical
+    {% else %}
+        Mi Perfil - Tienda Musical
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/perfil.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <!-- encabezados -->
+            <div class="text-center mb-4">
+                <h3 class="text-dark mb-2">
+                    {% if modo_edicion %}
+                        <i class="fas fa-edit me-2"></i>Editar Mi Perfil
+                    {% else %}
+                        <i class="fas fa-user me-2"></i>Mi Perfil
+                    {% endif %}
+                </h3>
+                <p class="text-muted">
+                    {% if modo_edicion %}
+                        Actualiza tu información personal y dirección de envío
+                    {% else %}
+                        Información de tu cuenta y datos personales
+                    {% endif %}
+                </p>
+            </div>
+
+            <!-- formulario solo en modo edición -->
+            {% if modo_edicion %}
+                <!-- form con subida de archivos -->
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- errores generales -->
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+            {% endif %}
+
+            <!-- dos columnas con igual altura -->
+            <div class="row fila-altura-igual">
+                
+                <!-- información personal -->
+                <div class="col-md-6 mb-4 columna-altura-igual">
+                    <div class="card seccion-card">
+                        <div class="seccion-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-user me-2"></i>Información Personal
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            
+                            {% if modo_edicion %}
+                                
+                                <!-- subida de foto -->
+                                <div class="form-group text-center mb-4">
+                                    <label class="form-label">{{ form.foto.label }}</label>
+                                    
+                                    <!-- foto actual -->
+                                    {% if user.perfil.foto %}
+                                    <div class="mb-3">
+                                        <img src="{{ user.perfil.foto.url }}" alt="Foto actual" class="foto-actual mb-2">
+                                        <p class="text-muted small">Foto actual</p>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- área de subida -->
+                                    <div class="area-subida" onclick="document.getElementById('{{ form.foto.id_for_label }}').click();">
+                                        <i class="fas fa-camera fa-2x text-muted mb-2"></i>
+                                        <p class="text-muted mb-0 small">Haz clic para cambiar foto</p>
+                                        <small class="text-muted">JPG, PNG (máx. 5MB)</small>
+                                    </div>
+                                    {{ form.foto }}
+                                    
+                                    <!-- errores de foto -->
+                                    {% if form.foto.errors %}
+                                    <div class="text-danger mt-2 small">
+                                        {% for error in form.foto.errors %}
+                                        {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- nombre y apellido -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                                {{ form.first_name.label }}
+                                            </label>
+                                            {{ form.first_name }}
+                                            {% if form.first_name.errors %}
+                                            <div class="text-danger small">
+                                                {% for error in form.first_name.errors %}
+                                                {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                                {{ form.last_name.label }}
+                                            </label>
+                                            {{ form.last_name }}
+                                            {% if form.last_name.errors %}
+                                            <div class="text-danger small">
+                                                {% for error in form.last_name.errors %}
+                                                {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- email -->
+                                <div class="form-group">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                                        {{ form.email.label }} <span class="required-field">*</span>
+                                    </label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.email.errors %}
+                                        {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- teléfono -->
+                                <div class="form-group">
+                                    <label for="{{ form.telefono.id_for_label }}" class="form-label">
+                                        {{ form.telefono.label }}
+                                    </label>
+                                    {{ form.telefono }}
+                                    {% if form.telefono.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.telefono.errors %}
+                                        {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                            {% else %}
+                                <!-- modo vista: solo lectura -->
+                                
+                                <!-- avatar y info básica -->
+                                <div class="text-center mb-4">
+                                    {% if user.perfil.foto %}
+                                        <img src="{{ user.perfil.foto.url }}" alt="Foto de perfil" class="perfil-avatar mb-3">
+                                    {% else %}
+                                        <!-- placeholder sin foto -->
+                                        <div class="perfil-avatar-placeholder mb-3 mx-auto">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <!-- nombre o username -->
+                                    <h6 class="mb-1">
+                                        {% if user.first_name or user.last_name %}
+                                            {{ user.first_name }} {{ user.last_name }}
+                                        {% else %}
+                                            {{ user.username }}
+                                        {% endif %}
+                                    </h6>
+                                    
+                                    <!-- fecha registro -->
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar-alt me-1"></i>
+                                        Miembro desde {{ user.date_joined|date:"F Y" }}
+                                    </small>
+                                </div>
+
+                                <!-- filas de información -->
+                                <div class="info-row">
+                                    <div class="info-label">Usuario</div>
+                                    <div class="info-value">{{ user.username }}</div>
+                                </div>
+
+                                <div class="info-row">
+                                    <div class="info-label">Email</div>
+                                    <div class="info-value">
+                                        {% if user.email %}
+                                            {{ user.email }}
+                                        {% else %}
+                                            <span class="no-data">No especificado</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="info-row">
+                                    <div class="info-label">Teléfono</div>
+                                    <div class="info-value">
+                                        {% if user.perfil.telefono %}
+                                            {{ user.perfil.telefono }}
+                                        {% else %}
+                                            <span class="no-data">No especificado</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- sección: dirección envío -->
+                <div class="col-md-6 mb-4 columna-altura-igual">
+                    <div class="card seccion-card">
+                        <div class="seccion-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-map-marker-alt me-2"></i>Dirección de Envío
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            
+                            {% if modo_edicion %}
+                                <!-- modo edición: campos dirección -->
+                                
+                                <!-- dirección completa -->
+                                <div class="form-group">
+                                    <label for="{{ form.direccion.id_for_label }}" class="form-label">
+                                        {{ form.direccion.label }}
+                                    </label>
+                                    {{ form.direccion }}
+                                    <div class="texto-ayuda">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Incluye calle, número, piso, etc.
+                                    </div>
+                                    {% if form.direccion.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.direccion.errors %}
+                                        {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- ciudad y cp -->
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label for="{{ form.ciudad.id_for_label }}" class="form-label">
+                                                {{ form.ciudad.label }}
+                                            </label>
+                                            {{ form.ciudad }}
+                                            {% if form.ciudad.errors %}
+                                            <div class="text-danger small">
+                                                {% for error in form.ciudad.errors %}
+                                                {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="{{ form.codigo_postal.id_for_label }}" class="form-label">
+                                                C.P.
+                                            </label>
+                                            {{ form.codigo_postal }}
+                                            {% if form.codigo_postal.errors %}
+                                            <div class="text-danger small">
+                                                {% for error in form.codigo_postal.errors %}
+                                                {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- provincia -->
+                                <div class="form-group">
+                                    <label for="{{ form.provincia.id_for_label }}" class="form-label">
+                                        {{ form.provincia.label }}
+                                    </label>
+                                    {{ form.provincia }}
+                                    {% if form.provincia.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.provincia.errors %}
+                                        {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- info explicativa -->
+                                <div class="alert alert-info mt-3">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <small>
+                                        <strong>¿Por qué necesitamos tu dirección?</strong><br>
+                                        Para calcular gastos de envío y garantizar entregas correctas.
+                                    </small>
+                                </div>
+                                
+                            {% else %}
+                                <!-- modo vista: dirección -->
+                                
+                                <!-- si hay datos dirección -->
+                                {% if user.perfil.direccion or user.perfil.ciudad or user.perfil.codigo_postal %}
+                                    
+                                    <!-- filas info dirección -->
+                                    <div class="info-row">
+                                        <div class="info-label">Dirección</div>
+                                        <div class="info-value">
+                                            {% if user.perfil.direccion %}
+                                                {{ user.perfil.direccion }}
+                                            {% else %}
+                                                <span class="no-data">No especificada</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="info-row">
+                                        <div class="info-label">Ciudad</div>
+                                        <div class="info-value">
+                                            {% if user.perfil.ciudad %}
+                                                {{ user.perfil.ciudad }}
+                                            {% else %}
+                                                <span class="no-data">No especificada</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="info-row">
+                                        <div class="info-label">Código Postal</div>
+                                        <div class="info-value">
+                                            {% if user.perfil.codigo_postal %}
+                                                {{ user.perfil.codigo_postal }}
+                                            {% else %}
+                                                <span class="no-data">No especificado</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="info-row">
+                                        <div class="info-label">Provincia</div>
+                                        <div class="info-value">
+                                            {% if user.perfil.provincia %}
+                                                {{ user.perfil.provincia }}
+                                            {% else %}
+                                                <span class="no-data">No especificada</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <!-- estado dirección -->
+                                    <div class="text-center mt-3">
+                                        {% if user.perfil.direccion and user.perfil.ciudad and user.perfil.codigo_postal %}
+                                            <span class="badge bg-success estado-badge">
+                                                <i class="fas fa-check me-1"></i>Dirección completa
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning estado-badge">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>Información incompleta
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                {% else %}
+                                    <!-- sin dirección -->
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
+                                        <h6 class="text-muted">Sin dirección registrada</h6>
+                                        <p class="text-muted small mb-0">
+                                            Agrega tu dirección para facilitar los envíos.
+                                        </p>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- botones según modo -->
+            
+            {% if modo_edicion %}
+                <!-- botones formulario -->
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-guardar me-3">
+                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                    </button>
+                    <a href="{% url 'perfil' %}" class="btn btn-cancelar">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                </div>
+                </form> 
+            {% else %}
+                <!-- botón editar -->
+                <div class="text-center mt-3">
+                    <a href="{% url 'editar_perfil' %}" class="btn btn-editar">
+                        <i class="fas fa-edit me-2"></i>Editar Perfil
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- javascript para edición -->
+{% if modo_edicion %}
+<script>
+// manejo visual de subida de archivos
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('{{ form.foto.id_for_label }}');
+    if (fileInput) {
+        fileInput.style.display = 'none';
+        
+        fileInput.addEventListener('change', function() {
+            const fileName = this.files[0]?.name;
+            if (fileName) {
+                const uploadArea = document.querySelector('.area-subida');
+                uploadArea.innerHTML = `
+                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                    <p class="text-success mb-0 small">Archivo seleccionado:</p>
+                    <small class="text-muted">${fileName}</small>
+                `;
+            }
+        });
+    }
+});
+</script>
+{% endif %}
+{% endblock %}
+
+<!-- javascript adicional -->
+{% block extra_js %}
+{% load static %}
+<script src="{% static 'js/formularios.js' %}"></script>
+{% endblock %}

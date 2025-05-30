@@ -1,0 +1,180 @@
+/* Estilos  para perfiles de usuario */
+
+/* Avatar de perfil */
+.perfil-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #2c3e50;
+    object-fit: cover;
+}
+
+.perfil-avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #2c3e50;
+    background: #f5f7fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #2c3e50;
+}
+
+/* Contenedor de columnas con igual altura */
+.fila-altura-igual {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.columna-altura-igual {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tarjetas de sección */
+.seccion-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border: none;
+    margin-bottom: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.seccion-card .card-body {
+    flex: 1;
+}
+
+.seccion-header {
+    background: #2c3e50;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 10px 10px 0 0;
+    margin: 0;
+}
+
+/* Información */
+.info-row {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.no-data {
+    color: #999;
+    font-style: italic;
+}
+
+/* Formularios */
+.form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus {
+    border-color: #2c3e50;
+    box-shadow: 0 0 5px rgba(44, 62, 80, 0.3);
+    outline: none;
+}
+
+/* Área de subida */
+.area-subida {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.area-subida:hover {
+    border-color: #2c3e50;
+    background: #f0f2f5;
+}
+
+.foto-actual {
+    max-width: 100px;
+    border-radius: 8px;
+    border: 2px solid #2c3e50;
+}
+
+/* Texto de ayuda */
+.texto-ayuda {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Botones */
+.btn-guardar, .btn-editar {
+    background: #2c3e50;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-guardar:hover, .btn-editar:hover {
+    background: #1a252f;
+    color: white;
+}
+
+.btn-cancelar {
+    border: 2px solid #6c757d;
+    border-radius: 8px;
+    padding: 10px 25px;
+    font-weight: 500;
+    color: #6c757d;
+    background: transparent;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-cancelar:hover {
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+}
+
+/* estilos responsive */
+@media (max-width: 768px) {
+    .perfil-avatar, .perfil-avatar-placeholder {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .seccion-header {
+        padding: 0.75rem 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn-guardar, .btn-editar, .btn-cancelar {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}

@@ -11,6 +11,12 @@ class PerfilInline(admin.StackedInline):
 class CustomUserAdmin(UserAdmin):
     inlines = (PerfilInline,)
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'date_joined')
+    list_filter = UserAdmin.list_filter + ('perfil__ciudad',)
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+    
+    fieldsets = UserAdmin.fieldsets + (
+        ('Información adicional', {'fields': ()}),
+    )
 
 # Re-registramos el modelo User con nuestro CustomUserAdmin
 admin.site.unregister(User)

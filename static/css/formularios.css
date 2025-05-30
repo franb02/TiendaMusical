@@ -1,0 +1,38 @@
+/* Variables básicas */
+:root {
+    --color-primario-formulario: #2c3e50;
+    --fondo-tarjeta-formulario: #ffffff;
+}
+
+/* Tarjeta de formulario básica */
+.form-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Campos de entrada */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+}
+
+.form-control:focus {
+    border-color: var(--color-primario-formulario);
+    box-shadow: 0 0 5px rgba(44, 62, 80, 0.3);
+}
+
+/* Botones básicos */
+.btn-primary {
+    background-color: var(--color-primario-formulario);
+    border-color: var(--color-primario-formulario);
+    border-radius: 8px;
+    padding: 12px 25px;
+}
+
+.btn-primary:hover {
+    background-color: #1a252f;
+    border-color: #1a252f;
+}
+

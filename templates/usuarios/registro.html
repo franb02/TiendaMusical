@@ -1,19 +1,29 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Registro de Usuario - Tienda Musical{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/formularios.css' %}">
+{% endblock %}
+
 {% block content %}
+<!-- Contenedor principal -->
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Crear Cuenta</h3>
+            <!-- Tarjeta del formulario-->
+            <div class="card shadow form-card">
+                <!-- Cabecera -->
+                <div class="card-header text-center">
+                    <h3 class="mb-0"><i class="fas fa-user-plus form-icon"></i> Crear Cuenta</h3>
                 </div>
                 <div class="card-body">
+                    <!-- Formulario de registro con validación personalizada -->
                     <form method="post" novalidate>
                         {% csrf_token %}
                         
+                        <!-- Mostrar errores del formulario -->
                         {% if form.non_field_errors %}
                         <div class="alert alert-danger">
                             {% for error in form.non_field_errors %}
@@ -22,59 +32,111 @@
                         </div>
                         {% endif %}
                         
-                        <div class="mb-3">
-                            <label for="{{ form.username.id_for_label }}" class="form-label">Nombre de usuario</label>
-                            {{ form.username }}
-                            {% if form.username.errors %}
-                            <div class="text-danger">
-                                {% for error in form.username.errors %}
-                                {{ error }}
-                                {% endfor %}
+                        <!-- Campo de nombre de usuario con icono -->
+                        <div class="mb-4 input-group-custom">
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
                             </div>
-                            {% endif %}
-                            <div class="form-text">Requerido. 150 caracteres o menos. Letras, dígitos y @/./+/-/_ solamente.</div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.password1.id_for_label }}" class="form-label">Contraseña</label>
-                            {{ form.password1 }}
-                            {% if form.password1.errors %}
-                            <div class="text-danger">
-                                {% for error in form.password1.errors %}
-                                {{ error }}
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                            <div class="form-text">
-                                <ul>
-                                    <li>La contraseña no puede ser tu usuario.</li>
-                                    <li>La contraseña debe contener al menos 8 caracteres.</li>
-                                    <li>La contraseña no puede ser una contraseña comúnmente utilizada.</li>
-                                    <li>La contraseña no puede ser completamente numérica.</li>
-                                </ul>
+                            <div class="input-field">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">Nombre de usuario</label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.username.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="form-text"><i class="fas fa-info-circle me-1"></i>150 caracteres o menos. Letras, dígitos y @/./+/-/_ solamente.</div>
                             </div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="{{ form.password2.id_for_label }}" class="form-label">Confirmar contraseña</label>
-                            {{ form.password2 }}
-                            {% if form.password2.errors %}
-                            <div class="text-danger">
-                                {% for error in form.password2.errors %}
-                                {{ error }}
-                                {% endfor %}
+                        <!-- Campo de email con icono -->
+                        <div class="mb-4 input-group-custom">
+                            <div class="input-icon">
+                                <i class="fas fa-envelope"></i>
                             </div>
-                            {% endif %}
-                            <div class="form-text"></div>
+                            <div class="input-field">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">Email <span class="text-danger">*</span></label>
+                                {{ form.email }}
+                                <!-- Mostrar errores de validación del email -->
+                                {% if form.email.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.email.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="form-text"><i class="fas fa-info-circle me-1"></i>Usarás este email para iniciar sesión.</div>
+                            </div>
                         </div>
                         
+                        <!-- Campo de contraseña principal -->
+                        <div class="mb-4 input-group-custom">
+                            <div class="input-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="input-field">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label">Contraseña</label>
+                                {{ form.password1 }}
+                                <!-- Mostrar errores de validación de contraseña -->
+                                {% if form.password1.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.password1.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Campo de confirmación de contraseña -->
+                        <div class="mb-4 input-group-custom">
+                            <div class="input-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="input-field">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label">Confirmar contraseña</label>
+                                {{ form.password2 }}
+                                <!-- Mostrar errores de confirmación de contraseña -->
+                                {% if form.password2.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.password2.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Información sobre requisitos de contraseña -->
+                        <div class="password-requirements mb-4">
+                            <p class="requirements-title"><i class="fas fa-shield-alt me-1"></i>Tu contraseña debe:</p>
+                            <ul class="requirements-list">
+                                <li><i class="fas fa-check-circle me-1"></i>Contener al menos 8 caracteres</li>
+                                <li><i class="fas fa-check-circle me-1"></i>No ser igual a tu nombre de usuario</li>
+                                <li><i class="fas fa-check-circle me-1"></i>No ser una contraseña común</li>
+                                <li><i class="fas fa-check-circle me-1"></i>No ser completamente numérica</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Checkbox de términos y condiciones -->
+                        <div class="mb-3 form-check custom-checkbox">
+                            <input type="checkbox" class="form-check-input" id="agreeTerms">
+                            <label class="form-check-label" for="agreeTerms">Acepto los <a href="#" class="link-primary">términos y condiciones</a></label>
+                        </div>
+                        
+                        <!-- Botón de envío del formulario -->
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Registrarse</button>
+                            <button type="submit" class="btn btn-primary btn-block btn-register">
+                                <i class="fas fa-user-plus me-2"></i>Registrarse
+                            </button>
                         </div>
                     </form>
                 </div>
+                <!-- Pie de la tarjeta con enlace de login -->
                 <div class="card-footer text-center">
-                    <p class="mb-0">¿Ya tienes una cuenta? <a href="{% url 'login' %}">Iniciar sesión</a></p>
+                    <p class="mb-0">¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="link-primary">Iniciar sesión</a></p>
                 </div>
             </div>
         </div>
@@ -83,12 +145,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    // Añadir clases de Bootstrap a los campos del formulario
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('input').forEach(function(input) {
-            input.classList.add('form-control');
-        });
-    });
-</script>
+{% load static %}
+<!-- JavaScript para funcionalidad de formularios -->
+<script src="{% static 'js/formularios.js' %}"></script>
 {% endblock %}
