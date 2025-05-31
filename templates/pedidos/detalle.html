@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pedido #{{ pedido.id }} - Tienda Musical{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/perfil.css' %}">
+<link rel="stylesheet" href="{% static 'css/pedidos-comun.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">            
+            <!-- Header del pedido -->
+            <div class="pedido-card">
+                <div class="seccion-header">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <h3 class="mb-0">
+                            <i class="fas fa-receipt me-2"></i>Pedido #{{ pedido.numero_pedido|slice:":8" }}
+                        </h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Indicador -->
+                    <div class="mb-4">
+                        <h6 class="pedido-section-title">Estado del Pedido</h6>
+                        <div class="progress-container">
+                            <div class="step {% if pedido.estado == 'pendiente' %}active{% elif pedido.estado == 'confirmado' or pedido.estado == 'enviado' or pedido.estado == 'entregado' %}completed{% endif %}">
+                                <div class="step-circle">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <span class="step-label">Pendiente</span>
+                            </div>
+                            
+                            <div class="step {% if pedido.estado == 'confirmado' %}active{% elif pedido.estado == 'enviado' or pedido.estado == 'entregado' %}completed{% endif %}">
+                                <div class="step-circle">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <span class="step-label">Confirmado</span>
+                            </div>
+                            
+                            <div class="step {% if pedido.estado == 'enviado' %}active{% elif pedido.estado == 'entregado' %}completed{% endif %}">
+                                <div class="step-circle">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                                <span class="step-label">Enviado</span>
+                            </div>
+                            
+                            <div class="step {% if pedido.estado == 'entregado' %}active{% endif %}">
+                                <div class="step-circle">
+                                    <i class="fas fa-check-double"></i>
+                                </div>
+                                <span class="step-label">Entregado</span>
+                            </div>
+                        </div>
+                        
+                        {% if pedido.estado == 'cancelado' %}
+                        <div class="alert alert-danger mt-3">
+                            <i class="fas fa-times-circle me-2"></i>
+                            <strong>Pedido Cancelado</strong>
+                            <p class="mb-0 mt-2">Este pedido ha sido cancelado. El stock de los productos ha sido restaurado.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+            <!-- Información del pedido simplificada -->
+            <div class="pedido-info-grid">
+                <div class="info-section">
+                    <h6 class="pedido-section-title">Información del Pedido</h6>
+                    <div class="info-item">
+                        <span class="info-label">Fecha:</span>
+                        <span class="info-value">{{ pedido.fecha_creacion|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Estado:</span>
+                        <span class="info-value">{{ pedido.get_estado_display }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Método de pago:</span>
+                        <span class="info-value">{{ pedido.get_metodo_pago_display }}</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h6 class="pedido-section-title">Datos de Envío</h6>
+                    <div class="shipping-address">
+                        <strong>{{ pedido.nombre_cliente }}</strong><br>
+                        {{ pedido.direccion_envio }}<br>
+                        {{ pedido.codigo_postal_envio }} {{ pedido.ciudad_envio }}<br>
+                        {{ pedido.provincia_envio }}<br>
+                        <div class="contact-info mt-2">
+                            <div><strong>Email:</strong> {{ pedido.email_cliente }}</div>
+                            <div><strong>Teléfono:</strong> {{ pedido.telefono_cliente }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+            </div>
+            
+            <!-- Productos del pedido -->
+            <div class="pedido-card mt-4">
+                <div class="seccion-header">
+                    <h5 class="mb-0"><i class="fas fa-box me-2"></i>Productos Pedidos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="productos-table">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Precio Unitario</th>
+                                        <th class="text-center">Cantidad</th>
+                                        <th class="text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in pedido.items.all %}
+                                        <tr>
+                                            <td>
+                                                <div class="producto-info">
+                                                    {% if item.instrumento.imagen %}
+                                                        <img src="{{ item.instrumento.imagen.url }}" 
+                                                             alt="{{ item.instrumento.nombre }}" 
+                                                             class="producto-imagen">
+                                                    {% endif %}
+                                                    <div class="producto-detalles">
+                                                        <h6 class="producto-nombre">{{ item.instrumento.nombre }}</h6>
+                                                        <small class="producto-categoria">{{ item.instrumento.categoria.nombre }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="precio">€{{ item.precio_unitario|floatformat:2 }}</td>
+                                            <td class="text-center cantidad">{{ item.cantidad }}</td>
+                                            <td class="text-end precio">€{{ item.precio_total|floatformat:2 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="totales-section">
+                            <div class="total-row">
+                                <span class="total-label">Subtotal:</span>
+                                <span class="total-value">€{{ pedido.subtotal|floatformat:2 }}</span>
+                            </div>
+                            <div class="total-row">
+                                <span class="total-label">IVA (21%):</span>
+                                <span class="total-value">€{{ pedido.impuestos|floatformat:2 }}</span>
+                            </div>
+                            <div class="total-row total-final">
+                                <span class="total-label">Total:</span>
+                                <span class="total-value">€{{ pedido.total|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Acciones -->
+            <div class="pedido-actions">
+                <a href="{% url 'pedidos_mis_pedidos' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Volver a Mis Pedidos
+                </a>
+                
+                {% if pedido.puede_cancelar %}
+                    <form method="post" action="{% url 'pedidos_cancelar' pedido.numero_pedido %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" 
+                                onclick="return confirm('¿Estás seguro de que quieres cancelar este pedido? Esta acción no se puede deshacer.')">
+                            <i class="fas fa-times me-2"></i>Cancelar Pedido
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="{% static 'js/pedidos-comun.js' %}"></script>
+{% endblock %}
+{% endblock %}

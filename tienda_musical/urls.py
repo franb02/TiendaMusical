@@ -24,6 +24,8 @@ urlpatterns = [
     path('', include('productos.urls')),
     path('usuarios/', include('usuarios.urls')),
     path('carrito/', include('carrito.urls')),
+    path('pedidos/', include('pedidos.urls')),
+
 
     # Aquí se añadirán las URLs de las otras aplicaciones
 ]

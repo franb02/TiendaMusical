@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'productos',
     'usuarios',
     'carrito',
+    'pedidos',
 ]
 
 # Crispy Forms
@@ -164,3 +165,41 @@ AUTHENTICATION_BACKENDS = [
     'usuarios.backends.EmailBackend',  # Backend personalizado para email
     'django.contrib.auth.backends.ModelBackend',  # Backend por defecto
 ]
+
+# Configuración de logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'carrito': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

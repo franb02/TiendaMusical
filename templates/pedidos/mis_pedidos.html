@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mis Pedidos - Tienda Musical{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <!-- Encabezado principal -->
+            <div class="text-center mb-4">
+                <h2 class="text-dark mb-3">
+                    <i class="fas fa-box me-2"></i>Mis Pedidos
+                </h2>
+                <p class="text-muted">
+                    Información sobre tus pedidos realizados en la tienda.
+                    <span class="badge bg-secondary">{{ pedidos|length }} pedido{{ pedidos|length|pluralize:"s" }}</span>
+                </p>
+            </div>
+            
+            <!-- Filtros y búsqueda -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" id="filtros-form">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="buscar" class="form-label">Buscar pedido</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" id="buscar" name="buscar" 
+                                           placeholder="Número de pedido..." 
+                                           value="{{ request.GET.buscar }}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="estado" class="form-label">Estado</label>
+                                <select class="form-select" id="estado" name="estado">
+                                    <option value="">Todos los estados</option>
+                                    <option value="pendiente" {% if request.GET.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                                    <option value="confirmado" {% if request.GET.estado == 'confirmado' %}selected{% endif %}>Confirmado</option>
+                                    <option value="enviado" {% if request.GET.estado == 'enviado' %}selected{% endif %}>Enviado</option>
+                                    <option value="entregado" {% if request.GET.estado == 'entregado' %}selected{% endif %}>Entregado</option>
+                                    <option value="cancelado" {% if request.GET.estado == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="fecha_desde" class="form-label">Desde</label>
+                                <input type="date" class="form-control" id="fecha_desde" name="fecha_desde" 
+                                       value="{{ request.GET.fecha_desde }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">&nbsp;</label>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-filter me-1"></i>Filtrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if pedidos %}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    {% for pedido in pedidos %}
+                        <div class="col">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">#{{ pedido.numero_pedido|truncatechars:8 }}</h5>
+                                    <span class="badge
+                                        {% if pedido.estado == 'pendiente' %}bg-warning text-dark
+                                        {% elif pedido.estado == 'confirmado' %}bg-info
+                                        {% elif pedido.estado == 'enviado' %}bg-primary
+                                        {% elif pedido.estado == 'entregado' %}bg-success
+                                        {% elif pedido.estado == 'cancelado' %}bg-danger
+                                        {% endif %}">
+                                        {{ pedido.get_estado_display|upper }}
+                                    </span>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <ul class="list-group list-group-flush mb-3">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                            <span>Fecha</span>
+                                            <span>{{ pedido.fecha_creacion|date:"d/m/Y H:i" }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                            <span>Ítems</span>
+                                            <span>{{ pedido.items.count }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                            <span>Total</span>
+                                            <span><strong>€{{ pedido.total }}</strong></span>
+                                        </li>
+                                    </ul>
+
+                                    {% if pedido.estado == 'enviado' and pedido.fecha_envio %}
+                                        <p class="mb-2 text-info"><i class="fas fa-shipping-fast me-1"></i>
+                                            Enviado: {{ pedido.fecha_envio|date:"d/m/Y" }}
+                                        </p>
+                                    {% elif pedido.estado == 'entregado' and pedido.fecha_entrega %}
+                                        <p class="mb-2 text-success"><i class="fas fa-check-circle me-1"></i>
+                                            Entregado: {{ pedido.fecha_entrega|date:"d/m/Y" }}
+                                        </p>
+                                    {% elif pedido.estado == 'pendiente' %}
+                                        <p class="mb-2 text-warning"><i class="fas fa-exclamation-triangle me-1"></i>
+                                            Pendiente hace {{ pedido.dias_desde_creacion }} día{{ pedido.dias_desde_creacion|pluralize }}
+                                        </p>
+                                    {% endif %}
+
+                                    <div class="mt-auto">
+                                        <div class="d-grid">
+                                            <a href="{% url 'pedidos_detalle' pedido.numero_pedido %}"
+                                               class="btn btn-lg btn-primary-custom">
+                                                <i class="fas fa-eye me-2"></i>Ver Detalles
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No tienes pedidos aún</h4>
+                    <p class="text-muted">Cuando realices tu primer pedido, aparecerá aquí.</p>
+                    <a href="{% url 'producto_lista' %}" class="btn btn-primary">
+                        <i class="fas fa-shopping-bag me-2"></i>Ir a Comprar
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="{% static 'js/pedidos-comun.js' %}"></script>
+{% endblock %}
+{% endblock %}

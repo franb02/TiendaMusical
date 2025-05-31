@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Finalizar Compra{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pedidos-comun.css' %}">
+<link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="pedido-card">
+                <div class="seccion-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-shipping-fast me-2"></i>
+                        Información de Envío y Pago
+                    </h4>
+                </div>
+                <div class="card-body bg-light">
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <h6>Se encontraron los siguientes errores:</h6>
+                        <ul class="mb-0">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li>{{ field }}: {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    <form method="post" id="checkout-form" class="checkout-form">
+                        {% csrf_token %}
+                        
+                        <!-- Información Personal -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-user-circle me-2"></i>
+                                    Datos Personales
+                                </h5>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.nombre_cliente.id_for_label }}" class="form-label">{{ form.nombre_cliente.label }}</label>
+                                    {{ form.nombre_cliente }}
+                                    {% if form.nombre_cliente.errors %}
+                                        <div class="text-danger">{{ form.nombre_cliente.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.email_cliente.id_for_label }}" class="form-label">{{ form.email_cliente.label }}</label>
+                                    {{ form.email_cliente }}
+                                    {% if form.email_cliente.errors %}
+                                        <div class="text-danger">{{ form.email_cliente.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.telefono_cliente.id_for_label }}" class="form-label">{{ form.telefono_cliente.label }}</label>
+                                    {{ form.telefono_cliente }}
+                                    {% if form.telefono_cliente.errors %}
+                                        <div class="text-danger">{{ form.telefono_cliente.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de Envío -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                
+                                <h5 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    Dirección de Envío
+                                </h5>
+                                
+                                <!-- Selector simple de direcciones -->
+                                <div class="mb-3">
+                                    {% if direccion_completa %}
+                                    <!-- Opción 1: Usar dirección guardada -->
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="tipo_direccion" id="usar_guardada" value="guardada" checked>
+                                        <label class="form-check-label fw-bold" for="usar_guardada">
+                                            Usar mi dirección guardada
+                                        </label>
+                                        <div class="mt-3 ">
+                                            <div class="card border-0 shadow-sm">
+                                                <div class="card-header bg-light py-2 d-flex align-items-center">
+                                                    <i class="fas fa-home text-primary me-2"></i>
+                                                    <span class="fw-bold">Dirección de envío</span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="mb-1 fs-6"><strong>{{ user.perfil.direccion }}</strong></p>
+                                                    <p class="mb-0 text-muted">
+                                                        {{ user.perfil.ciudad }}, {{ user.perfil.provincia }} {{ user.perfil.codigo_postal }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Opción 2: Nueva dirección -->
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="tipo_direccion" id="nueva_direccion" value="nueva">
+                                        <label class="form-check-label fw-bold" for="nueva_direccion">
+                                            Usar otra dirección
+                                        </label>
+                                    </div>
+                                    {% else %}
+                                  
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Formulario de nueva dirección -->
+                            <div id="formulario-nueva-direccion" class="col-12" {% if direccion_completa %}style="display: none;"{% endif %}>
+                                <div class="card border-2 border-primary">
+                                    <div class="seccion-header text-white">
+                                        <h6 class="mb-0">
+                                            Nueva Dirección de Envío
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <!-- Dirección completa -->
+                                            <div class="col-12 mb-3">
+                                                <label for="{{ form.direccion_envio.id_for_label }}" class="form-label">
+                                                    {{ form.direccion_envio.label }}
+                                                </label>
+                                                {{ form.direccion_envio }}
+                                                {% if form.direccion_envio.errors %}
+                                                    <div class="text-danger">{{ form.direccion_envio.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <!-- Ciudad y provincia en la misma fila -->
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.ciudad_envio.id_for_label }}" class="form-label">
+                                                    {{ form.ciudad_envio.label }}
+                                                </label>
+                                                {{ form.ciudad_envio }}
+                                                {% if form.ciudad_envio.errors %}
+                                                    <div class="text-danger">{{ form.ciudad_envio.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.provincia_envio.id_for_label }}" class="form-label">
+                                                    {{ form.provincia_envio.label }}
+                                                </label>
+                                                {{ form.provincia_envio }}
+                                                {% if form.provincia_envio.errors %}
+                                                    <div class="text-danger">{{ form.provincia_envio.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <!-- Código postal -->
+                                            <div class="col-md-4 mb-3">
+                                                <label for="{{ form.codigo_postal_envio.id_for_label }}" class="form-label">
+                                                    {{ form.codigo_postal_envio.label }}
+                                                </label>
+                                                {{ form.codigo_postal_envio }}
+                                                {% if form.codigo_postal_envio.errors %}
+                                                    <div class="text-danger">{{ form.codigo_postal_envio.errors.0 }}</div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <!-- Checkbox para guardar -->
+                                            <div class="col-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="guardar_direccion" name="guardar_direccion_perfil" checked>
+                                                    <label class="form-check-label text-success" for="guardar_direccion">
+                                                        <i class="fas fa-save me-1"></i>Guardar esta dirección en mi perfil para futuras compras
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Campos ocultos para el formulario -->
+                            <input type="hidden" name="usar_direccion_perfil" id="usar_direccion_perfil" value="{% if direccion_completa %}true{% else %}false{% endif %}">
+                        </div>
+                        
+                        <!-- Método de Pago -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-credit-card me-2"></i>
+                                    Método de Pago
+                                </h5>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.metodo_pago.id_for_label }}" class="form-label">{{ form.metodo_pago.label }}</label>
+                                    {{ form.metodo_pago }}
+                                    {% if form.metodo_pago.errors %}
+                                        <div class="text-danger">{{ form.metodo_pago.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Notas Adicionales -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-sticky-note me-2"></i>
+                                    Notas Adicionales
+                                </h5>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="{{ form.notas.id_for_label }}" class="form-label">{{ form.notas.label }}</label>
+                                    {{ form.notas }}
+                                    {% if form.notas.errors %}
+                                        <div class="text-danger">{{ form.notas.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Términos y Condiciones -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="terminos" required>
+                                    <label class="form-check-label" for="terminos">
+                                        Acepto los <a href="#" target="_blank">términos y condiciones</a> 
+                                        y la <a href="#" target="_blank">política de privacidad</a>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Botones de Acción -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <a href="{% url 'carrito_detalle' %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Volver al Carrito
+                                    </a>
+                                    <button type="submit" class="boton-pago btn-lg" id="btn-confirmar">
+                                        <i class="fas fa-check me-2"></i>Confirmar Pedido
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resumen del Pedido -->
+        <div class="col-lg-4">
+            <div class="card sticky-checkout-summary">
+                <div class="seccion-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-receipt me-2"></i>
+                        Resumen del Pedido
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Items del Carrito -->
+                    <div class="mb-3">
+                        {% for item in items %}
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="flex-shrink-0 me-2">
+                                    {% if item.instrumento.imagen %}
+                                        <img src="{{ item.instrumento.imagen.url }}" 
+                                             alt="{{ item.instrumento.nombre }}" 
+                                             class="rounded" 
+                                             style="width: 40px; height: 40px; object-fit: cover;">
+                                    {% elif item.imagen %}
+                                        <img src="{{ item.imagen }}" 
+                                             alt="{{ item.instrumento.nombre }}" 
+                                             class="rounded" 
+                                             style="width: 40px; height: 40px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                             style="width: 40px; height: 40px;">
+                                            <i class="fas fa-music text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 text-truncate">
+                                        {{ item.instrumento.nombre|truncatechars:30 }}
+                                    </h6>
+                                    <small class="text-muted">
+                                        Cantidad: {{ item.cantidad }}
+                                    </small>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <strong>
+                                        €{{ item.get_total_precio|floatformat:2 }}
+                                    </strong>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Totales -->
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>€{{ subtotal|floatformat:2 }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>IVA (21%):</span>
+                        <span>€{{ impuestos|floatformat:2 }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Envío:</span>
+                        <span class="text-success">Gratis</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Total:</strong>
+                        <strong class="text-success">€{{ total|floatformat:2 }}</strong>
+                    </div>
+                    
+                    <!-- Métodos de Pago Aceptados implementar pasarela en un futuro-->
+                    <div class="text-center mt-4">
+                        <small class="text-muted d-block mb-2">Métodos de pago seguros:</small>
+                        <div class="payment-icons">
+                            <i class="fab fa-cc-visa fa-2x me-2 text-primary" title="Visa"></i>
+                            <i class="fab fa-cc-mastercard fa-2x me-2 text-warning" title="Mastercard"></i>
+                            <i class="fab fa-paypal fa-2x text-info" title="PayPal"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmación -->
+<div class="modal fade modal-confirmacion" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalConfirmacionLabel">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    Confirmar Pedido
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres realizar este pedido?</p>
+                <p><strong>Total a pagar: €{{ total }}</strong></p>
+                <p class="small text-muted">
+                    Una vez confirmado, recibirás un email con los detalles del pedido.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="confirmarPedido()">
+                    <i class="fas fa-check me-2"></i>Confirmar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/pedidos-comun.js' %}"></script>
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock %}
