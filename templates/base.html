@@ -56,12 +56,12 @@
                 {% endif %}
 
                 <ul class="navbar-nav ms-auto">
-                    <!-- Carrito de compras -FRONT -->
+                    <!-- Carrito de compras - SOLO para usuarios autenticados -->
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link cart-icon" href="">
+                        <a class="nav-link cart-icon" href="{% url 'carrito_detalle' %}">
                             <i class="fas fa-shopping-cart"></i>
-                            <span id="cart-count" class="cart-count">0</span>
+                            <span id="cart-count" class="cart-count">{{ carrito.get_total_items|default:0 }}</span>
                         </a>
                     </li>
                     {% endif %}
@@ -69,7 +69,7 @@
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                           <i class="fa-solid fa-user me-2"></i>{{ user.username }}
+                           <i class="fa-solid fa-user me-2"></i>{{ user.user|default:user.username }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="fas fa-user me-2"></i>Mi Perfil</a></li>
@@ -138,13 +138,38 @@
             </div>
             <hr>
             <div class="text-center">
-                <p>&copy; {% now "Y" %} Sonora. Todos los derechos reservados.</p>
+                <p>&copy; {% now "Y" %} Tienda Musical. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Contador carrito global -->
+    <script>
+        function actualizarContadorCarrito(totalItems) {
+            const contador = document.getElementById('cart-count');
+            if (!contador) return;
+            
+            if (totalItems !== undefined) {
+                // Actualización directa con datos conocidos
+                contador.textContent = totalItems;
+                contador.style.display = totalItems > 0 ? 'inline' : 'none';
+            } else {
+                // Petición AJAX para obtener datos actuales
+                fetch('/carrito/resumen/')
+                    .then(response => response.ok ? response.json() : Promise.reject())
+                    .then(data => {
+                        contador.textContent = data.total_items;
+                        contador.style.display = data.total_items > 0 ? 'inline' : 'none';
+                    })
+                    .catch(() => contador.style.display = 'none');
+            }
+        }
+        
+        // Inicializar cuando cargue la página
+        document.addEventListener('DOMContentLoaded', () => actualizarContadorCarrito());
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

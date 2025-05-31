@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carrito{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="container my-5">
+    {% if not user.is_authenticated %}
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card text-center">
+                    <div class="card-body p-5">
+                        <i class="fas fa-shopping-cart icono-carrito-vacio"></i>
+                        <h3 class="titulo-carrito-vacio">Inicia Sesión para Usar el Carrito</h3>
+                        <p class="text-muted descripcion-carrito-vacio">Para agregar productos al carrito necesitas iniciar sesión.</p>
+                        <a href="/admin/login/" class="btn btn-primary me-2">Iniciar Sesión</a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% if total_items > 0 %}
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="seccion-header">
+                            <h4><i class="fas fa-shopping-cart me-2"></i>Carrito ({{ total_items }} artículos)</h4>
+                            <button class="boton-vaciar" onclick="limpiarCarrito()">
+                                <i class="fas fa-trash"></i> Vaciar
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            {% for item in items %}
+                                <div class="item-carrito" data-id="{{ item.instrumento.id }}" data-stock="{{ item.instrumento.stock }}">
+                                    <!-- Imagen -->
+                                    <div class="flex-shrink-0">
+                                        {% if item.instrumento.imagen %}
+                                            <img src="{{ item.instrumento.imagen.url }}" class="imagen-carrito" alt="{{ item.instrumento.nombre }}">
+                                        {% else %}
+                                            <div class="placeholder-imagen">
+                                                <i class="fas fa-music"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Información del producto -->
+                                    <div class="info-producto">
+                                        <h6 class="nombre-producto">{{ item.instrumento.nombre }}</h6>
+                                        <small class="categoria-producto">{{ item.instrumento.categoria.nombre }}</small>
+                                        <div class="mt-1">
+                                            <span class="precio-unitario">€{{ item.instrumento.precio|floatformat:2 }}</span>
+                                            <div class="stock-info">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-box me-1"></i>{{ item.instrumento.stock }} disponibles
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Controles de cantidad -->
+                                    <div class="controles-cantidad">
+                                        <input type="number" class="input-cantidad" 
+                                               value="{{ item.cantidad }}" min="1" max="{{ item.instrumento.stock }}"
+                                               onchange="cambiarCantidad({{ item.instrumento.id }}, this.value)">
+                                    </div>
+                                    
+                                    <!-- Total del item -->
+                                    <div class="precio-total-item">
+                                        €{{ item.get_total_precio|floatformat:2 }}
+                                    </div>
+                                    
+                                    <!-- Botón eliminar -->
+                                    <div>
+                                        <button class="boton-eliminar" onclick="eliminarDelCarrito({{ item.instrumento.id }})" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="seccion-header">
+                            <h5><i class="fas fa-receipt me-2"></i>Resumen del Pedido</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="fila-resumen">
+                                <span>Subtotal:</span>
+                                <span id="subtotal">€{{ subtotal|floatformat:2 }}</span>
+                            </div>
+                            <div class="fila-resumen">
+                                <span>IVA (21%):</span>
+                                <span id="impuestos">€{{ impuestos|floatformat:2 }}</span>
+                            </div>
+                            <div class="fila-resumen">
+                                <span>Envío:</span>
+                                <span class="texto-envio-gratis"><i class="fas fa-truck me-1"></i>Gratis</span>
+                            </div>
+                            <div class="fila-resumen total">
+                                <span>Total:</span>
+                                <span id="total">€{{ total|floatformat:2 }}</span>
+                            </div>
+                            
+                            <div class="botones-accion">
+                                <a href="" class="boton-pago">
+                                    <i class="fas fa-credit-card me-2"></i>Proceder al Pago
+                                </a>
+                                <a href="{% url 'home' %}" class="boton-continuar">
+                                    <i class="fas fa-arrow-left me-2"></i>Continuar Comprando
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8">
+                    <div class="carrito-vacio">
+                        <i class="fas fa-shopping-cart icono-carrito-vacio"></i>
+                        <h4 class="titulo-carrito-vacio">Tu carrito está vacío</h4>
+                        <p class="descripcion-carrito-vacio">¡Descubre nuestros increíbles instrumentos musicales!</p>
+                        <a href="{% url 'home' %}" class="boton-explorar">
+                            <i class="fas fa-music me-2"></i>Explorar Tienda
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="cart-toast" class="toast">
+        <div class="toast-header">
+            <i class="fas fa-shopping-cart me-2"></i>
+            <strong class="me-auto">Carrito</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="toast-message"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/carrito-detalle.js' %}"></script>
+{% endblock %}

@@ -23,6 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('productos.urls')),
     path('usuarios/', include('usuarios.urls')),
+    path('carrito/', include('carrito.urls')),
+
     # Aquí se añadirán las URLs de las otras aplicaciones
 ]
 

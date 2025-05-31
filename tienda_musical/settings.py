@@ -39,14 +39,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Aplicaciones de terceros
     'crispy_forms',
+    'crispy_bootstrap5',
     'django_filters',
     # Aplicaciones propias
     'productos',
     'usuarios',
+    'carrito',
 ]
 
 # Crispy Forms
-CRISPY_TEMPLATE_PACK = 'bootstrap5'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'carrito.context_processors.carrito_context',
                 'productos.context_processors.categoria_actual',
             ],
         },
@@ -145,3 +150,17 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configuración de email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Para desarrollo
+DEFAULT_FROM_EMAIL = 'tienda@tiendamusical.com'
+
+# Configuración de sesiones
+SESSION_COOKIE_AGE = 86400  # 24 horas
+SESSION_SAVE_EVERY_REQUEST = True
+
+# Configuración de autenticación
+AUTHENTICATION_BACKENDS = [
+    'usuarios.backends.EmailBackend',  # Backend personalizado para email
+    'django.contrib.auth.backends.ModelBackend',  # Backend por defecto
+]
