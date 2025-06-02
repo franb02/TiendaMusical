@@ -32,8 +32,14 @@ def login_view(request):
                 login(request, user)
                 # Mostrar email si esta disponible, sino nombre de usuario
                 display_name = user.email if user.email else user.username
-                messages.success(request, f'Bienvenido, {display_name}!')
-                return redirect('home')
+                
+                # Verificar si el usuario es administrador y redirigir al admin
+                if user.is_staff or user.is_superuser:
+                    messages.success(request, f'Bienvenido al panel de administración, {display_name}!')
+                    return redirect('/admin/')
+                else:
+                    messages.success(request, f'Bienvenido, {display_name}!')
+                    return redirect('home')
         else:
             messages.error(request, 'Email/usuario o contraseña incorrectos')
     else:
@@ -42,9 +48,20 @@ def login_view(request):
 
 #Vista para cerrar sesion
 def logout_view(request):
+    # Verificar si viene del admin
+    viene_del_admin = request.META.get('HTTP_REFERER', '').endswith('/admin/') or '/admin/' in request.META.get('HTTP_REFERER', '')
+    
     logout(request)
     messages.success(request, 'Has cerrado sesión correctamente')
-    return redirect('home')
+    
+    # Si viene del admin y tiene nextparameter, redirigir ahí
+    next_url = request.GET.get('next')
+    if next_url:
+        return redirect(next_url)
+    elif viene_del_admin:
+        return redirect('login')
+    else:
+        return redirect('home')
 
 #Vista para ver el perfil de usuario
 @login_required

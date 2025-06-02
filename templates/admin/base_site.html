@@ -1,0 +1,127 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+<!-- Título personalizado de la página del admin -->
+{% block title %}{{ title }} | {{ site_title|default:_('Tienda Musical Sonora - Administración') }}{% endblock %}
+
+<!-- Personalización del logo y nombre -->
+{% block branding %}
+<div id="nombre-sitio-admin">
+    <a href="{% url 'admin:index' %}" class="enlace-logo-admin">
+        <img src="{% static 'logoo.svg' %}" 
+             alt="Logo Tienda Musical Sonora" 
+             height="40" 
+             class="logo-admin">
+        <!-- Título del panel de administración -->
+        <span class="titulo-admin">Panel de Administración</span>
+    </a>
+</div>
+{% endblock %}
+
+<!-- Navegación global integrada -->
+{% block nav-global %}
+<div class="navegacion-admin">
+    <!-- Enlace para regresar a la tienda principal -->
+    <a href="{% url 'home' %}" class="boton-tienda">
+        <i class="fas fa-home"></i> Ir a la Tienda
+    </a>
+    
+    <!-- Información del usuario -->
+    {% if user.is_authenticated %}
+    <span class="info-usuario">
+        <i class="fas fa-user"></i> {{ user.username }}
+    </span>
+    <!-- Enlace para cerrar sesión -->
+    <a href="{% url 'logout' %}?next={% url 'login' %}" class="boton-cerrar-sesion">
+        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+<!-- Estilos personalizados -->
+{% block extrahead %}
+{{ block.super }}
+<!-- Iconos de Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>    
+    #header {
+        background: linear-gradient(135deg,  #1e3c72 0%, #16a085 100%) !important;
+    }
+    
+    /* Estilos para el logo y el nombre del sitio */
+    #nombre-sitio-admin .enlace-logo-admin {
+        text-decoration: none;
+        color:  #fff;
+        display: flex;
+        align-items: center;
+    }
+    
+    #nombre-sitio-admin .logo-admin {
+        vertical-align: middle;
+        margin-right: 10px;
+        /* Convertir el logo a color blanco */
+        filter: brightness(0) invert(1);
+    }
+    
+    #nombre-sitio-admin .titulo-admin {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    #branding h1 {
+        color:  #fff !important;
+    }
+    
+    /* Navegación personalizada del admin */
+    .navegacion-admin {
+        float: right;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .boton-tienda, .boton-cerrar-sesion {
+        color: #fff;
+        text-decoration: none;
+        transition: opacity 0.3s ease;
+    }
+    
+    .boton-tienda:hover, .boton-cerrar-sesion:hover {
+        opacity: 0.8;
+        color:  #fff;
+    }
+    
+    .info-usuario {
+        color:  #fff;
+    }
+    
+    /* Módulos y componentes del admin */
+    .module caption {
+        background: #1e3c72 !important;
+    }
+    
+    /* Botones personalizados del admin */
+    .button, input[type=submit], input[type=button], .submit-row input, a.button {
+        background: #1e3c72 !important;
+        border-color: #1e3c72 !important;
+        transition: background-color 0.3s ease;
+    }
+    
+    .button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, a.button:hover {
+        background: #16a085 !important;
+    }
+    
+    /* Migas de pan del admin */
+    .breadcrumbs {
+        background: #f8f9fa !important;
+        border-bottom: 1px solid #dee2e6 !important;
+    }
+    
+    .breadcrumbs a {
+        color: #1e3c72 !important;
+    }
+</style>
+{% endblock %}

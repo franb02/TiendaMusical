@@ -3,6 +3,11 @@ from .models import Perfil
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
+# Personalización del admin
+admin.site.site_header = " Sonora Panel de Administración"
+admin.site.site_title = "Admin Sonora"
+admin.site.index_title = "Bienvenido al Panel de Administración"
+
 class PerfilInline(admin.StackedInline):
     model = Perfil
     can_delete = False
