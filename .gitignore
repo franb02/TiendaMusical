@@ -142,8 +142,17 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# Media files (opcional - descomenta si no quieres versionar archivos subidos por usuarios)
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+
+# Static files collected for production
+staticfiles/
+
+# Media files (considera si quieres incluir esto en producción)
 # media/
 
-# Static files collected
-# staticfiles/
+# Render specific
+.render-buildpacks-cache/
