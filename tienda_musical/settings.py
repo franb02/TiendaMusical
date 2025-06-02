@@ -66,6 +66,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Para servir archivos estáticos
+    'tienda_musical.middleware.MediaServeMiddleware',  # Para servir archivos media en producción
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -166,14 +167,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Configuración para archivos multimedia en producción
 if not DEBUG:
-    # Para producción, considera usar un servicio de almacenamiento como AWS S3
-    # Por ahora mantenemos el almacenamiento local con WhiteNoise
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
-    
-    # Añadir media files a WhiteNoise en producción (no recomendado para archivos grandes)
+    # Configurar WhiteNoise para servir archivos media en producción
     WHITENOISE_USE_FINDERS = True
     WHITENOISE_AUTOREFRESH = True
+    # Permitir que WhiteNoise sirva archivos media
+    WHITENOISE_MAX_AGE = 31536000  # 1 año
+    WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz', 'br']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

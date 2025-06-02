@@ -30,6 +30,11 @@ urlpatterns = [
     # Aquí se añadirán las URLs de las otras aplicaciones
 ]
 
-# Configuración para servir archivos multimedia en desarrollo
+# Configuración para servir archivos multimedia
 if settings.DEBUG:
+    # En desarrollo, Django sirve los archivos media
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # En producción, también añadimos la configuración para archivos media
+    # WhiteNoise lo manejará junto con los archivos estáticos
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
