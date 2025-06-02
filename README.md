@@ -1,94 +1,60 @@
-# Tienda Musical - Proyecto Django
+# Sonora
 
-Una aplicación web de tienda musical desarrollada con Django que permite a los usuarios navegar, comprar instrumentos musicales y gestionar pedidos.
+**Sonora** es una aplicación web orientada a ofrecer una experiencia de compra de instrumentos y accesorios musicales de forma dinámica, ágil y atractiva.
 
-## Características
+## 🚀 Descripción
 
-- Sistema de autenticación de usuarios
-- Catálogo de instrumentos musicales
-- Carrito de compras
-- Sistema de pedidos
-- Panel de administración
-- Interfaz responsive con Bootstrap
+Este proyecto permite gestionar un catálogo completo de productos musicales, desde guitarras y teclados hasta accesorios, con funcionalidades enfocadas en:
 
-## Tecnologías Utilizadas
+- Navegación fluida entre categorías.
+- Búsqueda avanzada por nombre, tipo o rango de precio.
+- Visualización detallada de cada producto.
+- Gestión de carrito de compras con actualización en tiempo real.
+- Panel de administración para crear, editar o eliminar productos.
+- Interfaz responsive adaptada a dispositivos móviles y de escritorio.
 
-- Django 5.1+
-- PostgreSQL
-- HTML5/CSS3/JavaScript
-- Bootstrap 5
-- Crispy Forms
+## 🎯 Características principales
 
-## Instalación Local
+- **Catálogo dinámico**  
+  Carga de productos desde el backend en Python y renderizado con plantillas HTML/CSS/JavaScript.
 
-1. Clona el repositorio:
-```bash
-git clone <tu-repositorio>
-cd TiendaMusical
-```
+- **Carrito interactivo**  
+  Añade o elimina productos sin recargar la página.
 
-2. Crea un entorno virtual:
-```bash
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-```
+- **Panel de administración**  
+  Dashboard protegido para gestión completa del inventario.
 
-3. Instala las dependencias:
-```bash
-pip install -r requirements.txt
-```
+- **Diseño responsive**  
+  Adaptación automática a distintos tamaños de pantalla.
 
-4. Configura las variables de entorno:
-```bash
-cp .env.example .env
-# Edita .env con tus configuraciones locales
-```
+- **Seguridad básica**  
+  Autenticación de usuarios y protección de rutas sensibles.
 
-5. Ejecuta las migraciones:
-```bash
-python manage.py migrate
-```
+## 🛠️ Tecnologías
 
-6. Crea un superusuario:
-```bash
-python manage.py createsuperuser
-```
+- Backend: Python (framework a elección)
+- Frontend: HTML5, CSS3, JavaScript
+- Shell: Scripts de despliegue y mantenimiento
 
-7. Ejecuta el servidor de desarrollo:
-```bash
-python manage.py runserver
-```
-
-## Estructura del Proyecto
+## 📂 Estructura del proyecto
 
 ```
-TiendaMusical/
-├── carrito/           # App del carrito de compras
-├── pedidos/           # App de gestión de pedidos
-├── productos/         # App del catálogo de productos
-├── usuarios/          # App de gestión de usuarios
-├── static/           # Archivos estáticos (CSS, JS, imágenes)
-├── templates/        # Plantillas HTML
-├── media/           # Archivos multimedia subidos
-├── tienda_musical/  # Configuración principal del proyecto
-├── manage.py
-├── requirements.txt
-├── build.sh         # Script de construcción para Render
-├── runtime.txt      # Versión de Python para Render
-└── .env.example     # Variables de entorno de ejemplo
+├── app/
+│   ├── templates/       # Plantillas HTML
+│   ├── static/
+│   │   ├── css/         # Estilos
+│   │   └── js/          # Scripts
+│   └── ...              # Lógica del backend
+├── scripts/             # Utilidades y despliegues en Shell
+└── README.md            # Documentación principal
 ```
 
-## Variables de Entorno
+## 🎮 Uso
 
-### Desarrollo
-```bash
-DEBUG=True
-SECRET_KEY=django-insecure-key
-```
+1. Accede al portal en la ruta principal.
+2. Explora las categorías o utiliza la búsqueda para encontrar tu producto.
+3. En la vista de detalle, ajusta la cantidad y añade al carrito.
+4. Consulta el resumen del carrito para revisar productos y totales.
+5. Finaliza tu compra mediante el flujo de pedido definido por la plataforma.
 
-### Producción
-```bash
-DEBUG=False
-SECRET_KEY=clave-secreta-super-segura
-DATABASE_URL=postgresql://user:password@host:port/database
-```
+
