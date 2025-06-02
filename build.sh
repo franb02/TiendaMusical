@@ -35,3 +35,11 @@ if not User.objects.filter(username=admin_username).exists():
 else:
     print(f'ℹ️  Superusuario {admin_username} ya existe')
 "
+
+# Diagnóstico completo de Cloudinary en producción
+echo "🔧 Ejecutando diagnóstico completo de Cloudinary..."
+python diagnostico_produccion.py
+
+# Migrar imágenes existentes a Cloudinary
+echo "🔄 Migrando imágenes existentes a Cloudinary..."
+python migrar_imagenes.py
