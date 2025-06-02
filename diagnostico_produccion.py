@@ -136,7 +136,8 @@ def verificar_instrumentos_en_db():
     
     for inst in con_imagen[:5]:  # Mostrar solo los primeros 5
         print(f"   🎸 {inst.nombre}")
-        print(f"      Imagen: {inst.imagen.name if inst.imagen else 'Sin imagen'}")
+        # Para CloudinaryField, usar str() en lugar de .name
+        print(f"      Imagen: {str(inst.imagen) if inst.imagen else 'Sin imagen'}")
         if inst.imagen:
             try:
                 url = inst.imagen.url
