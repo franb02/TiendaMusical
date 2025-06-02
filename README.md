@@ -59,61 +59,6 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-## Despliegue en Render
-
-### Paso 1: Preparar el repositorio
-
-Asegúrate de que todos los archivos de configuración estén en tu repositorio:
-- `build.sh` - Script de construcción
-- `runtime.txt` - Versión de Python
-- `requirements.txt` - Dependencias
-- Configuración de producción en `settings.py`
-
-### Paso 2: Crear el servicio en Render
-
-1. Ve a [render.com](https://render.com) e inicia sesión
-2. Haz clic en "New +" y selecciona "Web Service"
-3. Conecta tu repositorio de GitHub/GitLab
-4. Configura el servicio:
-   - **Name**: tienda-musical (o el nombre que prefieras)
-   - **Environment**: Python 3
-   - **Build Command**: `./build.sh`
-   - **Start Command**: `gunicorn tienda_musical.wsgi:application`
-
-### Paso 3: Configurar variables de entorno
-
-En el dashboard de Render, ve a "Environment" y añade:
-
-```
-SECRET_KEY=tu-clave-secreta-super-segura-y-larga
-DEBUG=False
-DATABASE_URL=postgresql://user:password@host:port/database
-```
-
-### Paso 4: Configurar la base de datos
-
-1. En Render, crea una nueva "PostgreSQL Database"
-2. Copia la "External Database URL"
-3. Úsala como valor para `DATABASE_URL` en las variables de entorno
-
-### Paso 5: Desplegar
-
-1. Haz clic en "Deploy" en el dashboard
-2. Render automáticamente:
-   - Ejecutará `build.sh`
-   - Instalará dependencias
-   - Recolectará archivos estáticos
-   - Ejecutará migraciones
-   - Iniciará la aplicación con Gunicorn
-
-### Comandos útiles después del despliegue
-
-Para crear un superusuario en producción:
-```bash
-# En el shell de Render
-python manage.py createsuperuser
-```
-
 ## Estructura del Proyecto
 
 ```
@@ -147,15 +92,3 @@ DEBUG=False
 SECRET_KEY=clave-secreta-super-segura
 DATABASE_URL=postgresql://user:password@host:port/database
 ```
-
-## Contribuir
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## Licencia
-
-Este proyecto está bajo la Licencia MIT.
