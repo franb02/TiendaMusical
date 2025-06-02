@@ -2,6 +2,10 @@
 # exit on error
 set -o errexit
 
+# Verificar variables de entorno de Cloudinary
+echo "🔍 Verificando configuración de Cloudinary..."
+python verificar_env.py
+
 pip install -r requirements.txt
 
 # Crear directorios necesarios

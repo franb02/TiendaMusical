@@ -1,0 +1,20 @@
+# Variables de entorno para añadir en Render
+# Copia y pega estas variables en tu dashboard de Render
+
+CLOUDINARY_CLOUD_NAME=dscym9goa
+CLOUDINARY_API_KEY=774571322192483
+CLOUDINARY_API_SECRET=DqlOJCETUkMIPJAQf4JfO41n2q0
+CLOUDINARY_URL=cloudinary://774571322192483:DqlOJCETUkMIPJAQf4JfO41n2q0@dscym9goa
+
+# Pasos para configurar en Render:
+# 1. Ve a https://dashboard.render.com/
+# 2. Selecciona tu proyecto
+# 3. Ve a la pestaña "Environment"
+# 4. Haz clic en "Add Environment Variable"
+# 5. Añade cada variable una por una:
+#    - Name: CLOUDINARY_CLOUD_NAME, Value: dscym9goa
+#    - Name: CLOUDINARY_API_KEY, Value: 774571322192483
+#    - Name: CLOUDINARY_API_SECRET, Value: DqlOJCETUkMIPJAQf4JfO41n2q0
+#    - Name: CLOUDINARY_URL, Value: cloudinary://774571322192483:DqlOJCETUkMIPJAQf4JfO41n2q0@dscym9goa
+# 6. Guarda los cambios
+# 7. Redespliega el proyecto
