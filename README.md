@@ -32,7 +32,7 @@ Este proyecto permite gestionar un catálogo completo de productos musicales, de
 
 ## 🛠️ Tecnologías
 
-- Backend: Python (framework a elección)
+- Backend: Python (Django)
 - Frontend: HTML5, CSS3, JavaScript
 - Shell: Scripts de despliegue y mantenimiento
 
