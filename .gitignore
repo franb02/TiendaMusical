@@ -156,3 +156,7 @@ staticfiles/
 
 # Render specific
 .render-buildpacks-cache/
+
+# Archivos de despliegue y verificación (mantener solo local)
+DESPLIEGUE_RENDER.md
+verificar_entorno.py
