@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from cloudinary.models import CloudinaryField
 # Modelo para categorias 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100)
@@ -27,7 +28,7 @@ class Instrumento(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
     disponible = models.BooleanField(default=True)
-    imagen = models.ImageField(upload_to='instrumentos/', blank=True)
+    imagen = CloudinaryField('image', folder='instrumentos', blank=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     especificaciones = models.JSONField(blank=True, null=True)
