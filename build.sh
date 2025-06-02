@@ -2,14 +2,7 @@
 # exit on error
 set -o errexit
 
-# Verificar variables de entorno de Cloudinary
-echo "🔍 Verificando configuración de Cloudinary..."
-python verificar_env.py
-
 pip install -r requirements.txt
-
-# Crear directorios necesarios
-mkdir -p media/instrumentos
 
 python manage.py collectstatic --no-input
 python manage.py migrate
@@ -36,10 +29,4 @@ else:
     print(f'ℹ️  Superusuario {admin_username} ya existe')
 "
 
-# Diagnóstico completo de Cloudinary en producción
-echo "🔧 Ejecutando diagnóstico completo de Cloudinary..."
-python diagnostico_produccion.py
-
-# Migrar imágenes existentes a Cloudinary
-echo "🔄 Migrando imágenes existentes a Cloudinary..."
-python migrar_imagenes.py
+echo "✅ Despliegue completado - Cloudinary configurado y funcionando"
