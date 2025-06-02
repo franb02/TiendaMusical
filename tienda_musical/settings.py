@@ -181,15 +181,21 @@ cloudinary.config(
 )
 
 # Configuración de archivos media
-if not DEBUG:
-    # Usar Cloudinary en producción
+# Usar Cloudinary si las variables están configuradas
+if all([
+    os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    os.environ.get('CLOUDINARY_API_KEY'),
+    os.environ.get('CLOUDINARY_API_SECRET')
+]):
+    # Usar Cloudinary tanto en desarrollo como en producción
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
-    # No necesitamos MEDIA_URL ni MEDIA_ROOT en producción con Cloudinary
+    print("✅ Usando Cloudinary para archivos media")
 else:
-    # En desarrollo usar sistema local
+    # Fallback a sistema local si no hay credenciales
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
+    print("⚠️  Usando sistema local para archivos media")
 
 # Configuración de WhiteNoise
 if not DEBUG:
