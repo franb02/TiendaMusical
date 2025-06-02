@@ -32,9 +32,8 @@ urlpatterns = [
 
 # Configuración para servir archivos multimedia
 if settings.DEBUG:
-    # En desarrollo, Django sirve los archivos media
+    # En desarrollo, Django sirve los archivos media localmente
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-else:
-    # En producción, también añadimos la configuración para archivos media
-    # WhiteNoise lo manejará junto con los archivos estáticos
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # También servir archivos estáticos en desarrollo
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# En producción, Cloudinary maneja los archivos media automáticamente

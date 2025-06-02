@@ -8,6 +8,7 @@ django-allauth>=0.58.0
 django-filter>=23.5
 django-storages>=1.14
 requests>=2.31.0
+django-cloudinary-storage>=0.3.0
 
 # Dependencias para producción
 gunicorn>=21.2.0
