@@ -33,12 +33,18 @@ def login_view(request):
                 # Mostrar email si esta disponible, sino nombre de usuario
                 display_name = user.email if user.email else user.username
                 
+                # Manejar redirección  
+                next_url = request.GET.get('next') or request.POST.get('next')
+                
                 # Verificar si el usuario es administrador y redirigir al admin
                 if user.is_staff or user.is_superuser:
                     messages.success(request, f'Bienvenido al panel de administración, {display_name}!')
                     return redirect('/admin/')
                 else:
                     messages.success(request, f'Bienvenido, {display_name}!')
+                    # Usar next_url si existe, sino ir a home
+                    if next_url:
+                        return redirect(next_url)
                     return redirect('home')
         else:
             messages.error(request, 'Email/usuario o contraseña incorrectos')

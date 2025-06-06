@@ -21,6 +21,10 @@
                     <!-- Formulario principal -->
                     <form method="post" novalidate>
                         {% csrf_token %}
+                        <!-- Campo oculto para mantener el parámetro next -->
+                        {% if request.GET.next %}
+                        <input type="hidden" name="next" value="{{ request.GET.next }}">
+                        {% endif %}
                         
                         <!-- Campo de usuario/email con icono -->
                         <div class="mb-4 input-group-custom">
@@ -69,7 +73,9 @@
                 </div>
                 <!-- Pie de la tarjeta con enlace de registro -->
                 <div class="card-footer text-center">
-                    <p class="mb-1">¿No tienes una cuenta? <a href="{% url 'registro' %}" class="link-primary">Registrarse</a></p>
+                    <p class="mb-1">¿No tienes una cuenta? 
+                        <a href="{% url 'registro' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" class="link-primary">Registrarse</a>
+                    </p>
                 </div>
             </div>
         </div>
