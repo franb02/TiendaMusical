@@ -21,14 +21,18 @@
                     <!-- Formulario principal -->
                     <form method="post" novalidate>
                         {% csrf_token %}
-                        
+                        <!-- Campo oculto para mantener el parámetro next -->A
+                        {% if request.GET.next %}
+                        <input type="hidden" name="next" value="{{ request.GET.next }}">
+                        {% endif %}
                         <!-- Campo de usuario/email con icono -->
                         <div class="mb-4 input-group-custom">
                             <div class="input-icon">
                                 <i class="fas fa-envelope"></i>
                             </div>
                             <div class="input-field">
-                                <label for="{{ form.username.id_for_label }}" class="form-label">Email o nombre de usuario</label>
+                                <label for="{{ form.username.id_for_label }}" class="form-label">Email o nombre de
+                                    usuario</label>
                                 {{ form.username }}
                                 <!-- Mostrar errores de validación si existen -->
                                 {% if form.username.errors %}
@@ -40,7 +44,7 @@
                                 {% endif %}
                             </div>
                         </div>
-                        
+
                         <!-- Campo de contraseña con icono -->
                         <div class="mb-4 input-group-custom">
                             <div class="input-icon">
@@ -58,7 +62,7 @@
                                 </div>
                                 {% endif %}
                             </div>
-                        </div>            
+                        </div>
                         <!-- Botón de envío del formulario -->
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-block btn-login">
@@ -69,7 +73,10 @@
                 </div>
                 <!-- Pie de la tarjeta con enlace de registro -->
                 <div class="card-footer text-center">
-                    <p class="mb-1">¿No tienes una cuenta? <a href="{% url 'registro' %}" class="link-primary">Registrarse</a></p>
+                    <p class="mb-1">¿No tienes una cuenta?
+                        <a href="{% url 'registro' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}"
+                            class="link-primary">Registrarse</a>Add commentMore actions
+                    </p>Add comment
                 </div>
             </div>
         </div>

@@ -97,7 +97,7 @@
                     <h5><i class="fas fa-info-circle me-2"></i>Inicia sesión para comprar</h5>
                     <p class="mb-2">Para agregar productos al carrito necesitas iniciar sesión en tu cuenta.</p>
                     <div class="d-flex gap-2">
-                        <a href="/admin/login/" class="btn btn-primary">
+                       <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}" class="btn btn-primary">
                             <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
                         </a>
                         <a href="{% url 'home' %}" class="btn btn-outline-secondary">
